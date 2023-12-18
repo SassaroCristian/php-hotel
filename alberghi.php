@@ -43,8 +43,14 @@
 
     if (isset($_GET['voto'])) {
         $voto = intval($_GET['voto']);
-        $hotelsFiltrati = array_filter($hotels, function ($hotel) use ($voto) {
-            return $hotel['vote'] >= $voto;
+        $distanza = isset($_GET['distanza']) ? floatval($_GET['distanza']) : PHP_INT_MAX;
+        $postoAuto = isset($_GET['postoAuto']) ? boolval($_GET['postoAuto']) : false;
+        $hotelsFiltrati = array_filter($hotels, function ($hotel) use ($voto, $distanza, $postoAuto) {
+            if ($postoAuto) {
+                return $hotel['vote'] >= $voto && $hotel['distance_to_center'] <= $distanza && $hotel['parking'] == true;
+            } else {
+                return $hotel['vote'] >= $voto && $hotel['distance_to_center'] <= $distanza && $hotel['parking'] == false;
+            }
         });
     } else {
         $hotelsFiltrati = $hotels;
@@ -77,7 +83,13 @@
                 echo "<tr>";
                 echo "<td>{$hotel['name']}</td>";
                 echo "<td>{$hotel['description']}</td>";
-                echo "<td>{$hotel['parking']}</td>";
+                echo "<td>";
+                    if ($hotel['parking']) {
+                    echo "Sì";
+                         } else {
+                    echo "No";
+                        }
+                    echo "</td>";
                 echo "<td>{$hotel['vote']}</td>";
                 echo "<td>{$hotel['distance_to_center']}</td>";
                 echo "</tr>";
