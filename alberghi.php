@@ -40,11 +40,22 @@
 
     ];    
 
-
+    // Ciclo for per stampare in pagina gli elementi del array. Uilizzo funzione isset per determinare se la variabile è dichiarata e diversa da null;
+    //uso $_GET per accedere alle variabilio passate attraverso i parametri dell'URL (query string), l'array è automaticamente popolato con i valori della query string nell'URL:
     if (isset($_GET['voto'])) {
+        //Ho utilizzato la funzione inval che converte i valori di una variabile in un intero
+        // Se $_GET['voto] fossse '3,14' verrebbe restituito solo '3'
         $voto = intval($_GET['voto']);
+        // Utilizzo operatore ternario ('? : ') per assegnare il valore floatval; altrimenti assegna il valore massimo 'PHP_INT_MAX', che è un modo comune di rappresentare l'infinito o in questo caso una distanza massima quando il valore non è specificato.
         $distanza = isset($_GET['distanza']) ? floatval($_GET['distanza']) : PHP_INT_MAX;
+        // Utilizzo operatore ternario per asseganre il valore boolval; se il parametro è presente restituisce true senno false. La funzione boolval converte un valore in un booleano (true/false oppure 1/0)
         $postoAuto = isset($_GET['postoAuto']) ? boolval($_GET['postoAuto']) : false;
+        // la funzione array_filter prende come primo argomento l'array da filtrare ('$hotels') e come secondo argomento una funzione di callback (funzione che viene passata come argomento a un'altra funzione) che determina i criteri di filtraggio;
+        // In questo caso la logica di filtraggio verifica tre condizioni:
+            // 1) $hotel['vote'] >= $voto 
+            // 2) $hotel['distance_To_Center'] =< $distanza 
+            // 3) $hotel['vote'] >= $voto 
+        // All'uscita $hotelsFiltrati conterra solo gli hotel che soddisfano tutti i criteri di filtraggio
         $hotelsFiltrati = array_filter($hotels, function ($hotel) use ($voto, $distanza, $postoAuto) {
             if ($postoAuto) {
                 return $hotel['vote'] >= $voto && $hotel['distance_to_center'] <= $distanza && $hotel['parking'] == true;
@@ -79,6 +90,8 @@
         </thead>
         <tbody
             <?php
+            // Ciclo foreach per stampare sulla pagina la tabella con i dati presi dal array $hotels
+            //condizione if per inserire Si se ce un parcheggio disponibile o NO se non c'è.
             foreach ($hotelsFiltrati as $hotel) {
                 echo "<tr>";
                 echo "<td>{$hotel['name']}</td>";
